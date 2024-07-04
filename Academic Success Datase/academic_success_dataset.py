@@ -90,3 +90,12 @@ plt.suptitle('Distribution of Categorical Variables', fontsize=20, y=1)
 plt.tight_layout()
 plt.show()
 
+catagories= ['dropedout', 'enrolled', 'graduated']
+label_encoder= LabelEncoder()
+train['Target']= label_encoder.fit_transform(train['Target'])
+train['Target']
+
+plt.figure(figsize=(16, 14))
+sns.heatmap(train.corr(), annot=True, cmap='coolwarm', fmt='.1f', linewidths=2, linecolor='gray')
+plt.suptitle('Correlation Matrix', fontsize=20, fontweight='bold', y=1)
+plt.show()

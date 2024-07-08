@@ -99,3 +99,59 @@ plt.figure(figsize=(16, 14))
 sns.heatmap(train.corr(), annot=True, cmap='coolwarm', fmt='.1f', linewidths=2, linecolor='gray')
 plt.suptitle('Correlation Matrix', fontsize=20, fontweight='bold', y=1)
 plt.show()
+
+# Split the features and target variable
+X_train = train[initial_features]
+y_train = train['Target']
+X_test = test[initial_features]
+
+from sklearn.model_selection import KFold
+from sklearn.metrics import accuracy_score
+
+def cross_validate_model(model, X_train, y_train, params, n_splits=10):
+    """
+    Performs K-Fold cross-validation for a given model, returns the last model and average validation accuracy.
+
+    Parameters:
+        model: Machine learning model class (e.g., RandomForestClassifier)
+        X_train: Training feature dataset
+        y_train: Training target dataset
+        params: Dictionary of parameters to initialize the model
+        n_splits: Number of folds for cross-validation (default: 10)
+
+    Returns:
+        last_model: The last trained model instance
+        average_val_accuracy: Average validation accuracy over all folds
+    """
+    # Initialize variables
+    cv = KFold(n_splits=n_splits, shuffle=True, random_state=0)
+    val_scores = []
+
+    # Cross-validation loop
+    for fold, (train_ind, valid_ind) in enumerate(cv.split(X_train)):
+        # Data splitting
+        X_fold_train = X_train.iloc[train_ind]
+        y_fold_train = y_train.iloc[train_ind]
+        X_val = X_train.iloc[valid_ind]
+        y_val = y_train.iloc[valid_ind]
+        
+        # Model initialization and training
+        clf = model(**params)
+        clf.fit(X_fold_train, y_fold_train)
+        
+        # Predict and evaluate
+        y_pred_trn = clf.predict(X_fold_train)
+        y_pred_val = clf.predict(X_val)
+        train_acc = accuracy_score(y_fold_train, y_pred_trn)
+        val_acc = accuracy_score(y_val, y_pred_val)
+        print(f"Fold: {fold}, Train Accuracy: {train_acc:.5f}, Val Accuracy: {val_acc:.5f}")
+        print("-" * 50)
+        
+        # Accumulate validation scores
+        val_scores.append(val_acc)
+
+    # Calculate the average validation score
+    average_val_accuracy = np.mean(val_scores)
+    print("Average Validation Accuracy:", average_val_accuracy)
+
+    return clf, average_val_accuracy

@@ -155,3 +155,18 @@ def cross_validate_model(model, X_train, y_train, params, n_splits=10):
     print("Average Validation Accuracy:", average_val_accuracy)
 
     return clf, average_val_accuracy
+
+print('Random Forest Cross-Validation Results:\n')
+rf_model, rf_mean_accuracy = cross_validate_model(RandomForestClassifier, X_train, y_train, params={} verbose=0
+
+# Predict the test set and reverse the label encoding
+rf_preds = rf_model.predict(X_test)
+rf_preds_labels = label_encoder.inverse_transform(rf_preds)
+
+# Save the predictions to a CSV file
+rf_result = pd.DataFrame(X_test.index)
+rf_result['Target'] = rf_preds_labels
+rf_result.to_csv('result_rf.csv', index=False)
+rf_result
+
+

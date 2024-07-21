@@ -169,4 +169,15 @@ rf_result['Target'] = rf_preds_labels
 rf_result.to_csv('result_rf.csv', index=False)
 rf_result
 
+print('AdaBoost Cross-Validation Results:\n')
+ada_model, ada_mean_accuracy = cross_validate_model(AdaBoostClassifier, X_train, y_train, params={})
 
+# Predict the test set and reverse the label encoding
+ada_preds = ada_model.predict(X_test)
+ada_preds_labels = label_encoder.inverse_transform(ada_preds)
+
+# Save the predictions to a CSV file
+ada_result = pd.DataFrame(X_test.index)
+ada_result['Target'] = ada_preds_labels
+ada_result.to_csv('result_ada.csv', index=False)
+ada_result

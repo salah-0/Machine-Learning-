@@ -181,3 +181,29 @@ ada_result = pd.DataFrame(X_test.index)
 ada_result['Target'] = ada_preds_labels
 ada_result.to_csv('result_ada.csv', index=False)
 ada_result
+
+print('Gradient Boosting Cross-Validation Results:\n')
+gb_model, gb_mean_accuracy = cross_validate_model(GradientBoostingClassifier, X_train, y_train, params={})
+
+# Predict the test set and reverse the label encoding
+gb_preds = gb_model.predict(X_test)
+gb_preds_labels = label_encoder.inverse_transform(gb_preds)
+
+# Save the predictions to a CSV file
+gb_result = pd.DataFrame(X_test.index)
+gb_result['Target'] = gb_preds_labels
+gb_result.to_csv('result_gb.csv', index=False)
+gb_result
+
+print('XGBoost Cross-Validation Results:\n')
+xgb_model, xgb_mean_accuracy = cross_validate_model(XGBClassifier, X_train, y_train, params={})
+
+# Predict the test set and reverse the label encoding
+xgb_preds = xgb_model.predict(X_test)
+xgb_preds_labels = label_encoder.inverse_transform(xgb_preds)
+
+# Save the predictions to a CSV file
+xgb_result = pd.DataFrame(X_test.index)
+xgb_result['Target'] = xgb_preds_labels
+xgb_result.to_csv('result_xgb.csv', index=False)
+xgb_result
